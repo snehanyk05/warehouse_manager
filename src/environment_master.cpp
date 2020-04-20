@@ -55,8 +55,14 @@ void EnvironmentMaster::init() {
       "request_available_task", &EnvironmentMaster::req_task, this);
 
   request_all_task_complete = this->n_.advertiseService("gen_final_report", &EnvironmentMaster::all_task_complete, this);
+
+  collision_sub = this->n_.subscribe("/collisions", 10, &EnvironmentMaster::collisionCallback, this);
 }
 
+void EnvironmentMaster::collisionCallback(const std_msgs::Int32::ConstPtr& msg)
+{
+  num_collisions_ = msg->data;
+}
 
 //We are using this currently
 bool EnvironmentMaster::req_task(warehouse_manager::Robot_Task_Request::Request &req,
@@ -129,30 +135,31 @@ bool EnvironmentMaster::all_task_complete(warehouse_manager::Robot_Gen_Report::R
  float total_distance;
  float one_robot_time;
  float one_robot_distance;
- while(robot_number_  >= 0)
+ int temp_num = robot_number_;
+ while(temp_num  >= 0)
  {
-   for(int i = 0; i < robot_time_[robot_number_].size(); i++)
+   for(int i = 0; i < robot_time_[temp_num].size(); i++)
    {
-     one_robot_time += robot_time_[robot_number_][i];
-     one_robot_distance += robot_distance_[robot_number_][i]; 
+     one_robot_time += robot_time_[temp_num][i];
+     one_robot_distance += robot_distance_[temp_num][i]; 
    }
-   outfile << "Robot: " << robot_number_ << " Time: " << one_robot_time << " Distance: " << one_robot_distance << "\n";
+   outfile << "Robot: " << temp_num << " Time: " << one_robot_time << " Distance: " << one_robot_distance << "\n";
    total_time += one_robot_time;
    total_distance += one_robot_distance;  
-   robot_number_  --;
+   temp_num--;
  }
  outfile << "\n" << "\n";
  outfile << "Total- "  << " Time: " << total_time << " Distance: " << total_distance << "\n" 
  //Print the number of collisions
- boost::shared_ptr<std_msgs::Int32 const> shared_count;
- std_msgs::Int32 col_count;
- shared_count = ros::topic::waitForMessage<std_msgs::Int32>("/collisions",this->n_);
- if(shared_count != NULL)
- {
-   col_count = *shared_count;
- }
+ //boost::shared_ptr<std_msgs::Int32 const> shared_count;
+ //std_msgs::Int32 col_count;
+ //shared_count = ros::topic::waitForMessage<std_msgs::Int32>("/collisions",this->n_);
+ //if(shared_count != NULL)
+ //{
+ //  col_count = *shared_count;
+ //}
  outfile << "\n";
- outfile << "Total number of collisions: " << col_count.data << "\n";
+ outfile << "Total number of collisions: " << num_collisions_ << "\n";
  outfile.close();
  }
 }
@@ -161,7 +168,7 @@ void EnvironmentMaster::add_to_report(int robot_number)
 {
   std::ofstream outfile;
   outfile.open("/home/krishna/Desktop/task100robot10_report.txt", std::ios_base::app);
-  if(robot_number >= 0)
+  if(robot_number >= 0 )
   {
     outfile << "\n" << "\n";
     for(int i = 0; i < robot_time_[robot_number].size(); i++)
@@ -178,31 +185,32 @@ void EnvironmentMaster::add_to_report(int robot_number)
     float total_distance;
     float one_robot_time;
     float one_robot_distance;
-    while(robot_number_  >= 0)
+    int temp_num = robot_number_;
+    while(temp_num  >= 0)
     {
-      for(int i = 0; i < robot_time_[robot_number_].size(); i++)
+      for(int i = 0; i < robot_time_[temp_num].size(); i++)
       {
-        one_robot_time += robot_time_[robot_number_][i];
-        one_robot_distance += robot_distance_[robot_number_][i]; 
+        one_robot_time += robot_time_[temp_num][i];
+        one_robot_distance += robot_distance_[temp_num][i]; 
       }
-      outfile << "Robot: " << robot_number_ << " Time: " << one_robot_time << " Distance: " << one_robot_distance << "\n";
+      outfile << "Robot: " << temp_num << " Time: " << one_robot_time << " Distance: " << one_robot_distance << "\n";
       total_time += one_robot_time;
       total_distance += one_robot_distance;  
-      robot_number_  --;
+      temp_num  --;
     }
     outfile << "\n" << "\n";
     outfile << "Total- "  << " Time: " << total_time << " Distance: " << total_distance << "\n";
 
     //Print the number of collisions
-    boost::shared_ptr<std_msgs::Int32 const> shared_count;
-    std_msgs::Int32 col_count;
-    shared_count = ros::topic::waitForMessage<std_msgs::Int32>("/collisions",this->n_);
-    if(shared_count != NULL)
-    {
-      col_count = *shared_count;
-    }
+    //boost::shared_ptr<std_msgs::Int32 const> shared_count;
+    //std_msgs::Int32 col_count;
+    //shared_count = ros::topic::waitForMessage<std_msgs::Int32>("/collisions",this->n_);
+    //if(shared_count != NULL)
+    //{
+    //  col_count = *shared_count;
+    //}
     outfile << "\n";
-    outfile << "Total number of collisions: " << col_count.data << "\n";
+    outfile << "Total number of collisions: " << num_collisions_ << "\n";
   }
   outfile.close();
 }
