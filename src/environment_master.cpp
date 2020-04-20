@@ -161,7 +161,7 @@ void EnvironmentMaster::add_to_report(int robot_number)
 {
   std::ofstream outfile;
   outfile.open("/home/krishna/Desktop/task100robot10_report.txt", std::ios_base::app);
-  if(robot_number > 0)
+  if(robot_number >= 0)
   {
     outfile << "\n" << "\n";
     for(int i = 0; i < robot_time_[robot_number].size(); i++)
