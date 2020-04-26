@@ -145,8 +145,10 @@ bool EnvironmentMaster::all_task_complete(warehouse_manager::Robot_Gen_Report::R
      one_robot_distance += robot_distance_[temp_num][i]; 
    }
    outfile << "Robot: " << temp_num << " Time: " << one_robot_time << " Distance: " << one_robot_distance << "\n";
-   total_time += (one_robot_time/robot_time_[temp_num].size());
-   total_distance += (one_robot_distance/robot_time_[temp_num].size());  
+   if(robot_time_[temp_num].size() > 0){
+      total_time += (one_robot_time/robot_time_[temp_num].size());
+      total_distance += (one_robot_distance/robot_time_[temp_num].size());  
+    }  
    temp_num--;
  }
  outfile << "\n" << "\n";
@@ -200,8 +202,10 @@ void EnvironmentMaster::add_to_report(int robot_number)
         one_robot_distance += robot_distance_[temp_num][i]; 
       }
       outfile << "Robot: " << temp_num << " Time: " << one_robot_time << " Distance: " << one_robot_distance << "\n";
-      total_time += (one_robot_time/robot_time_[temp_num].size());
-      total_distance += (one_robot_distance/robot_time_[temp_num].size());  
+      if(robot_time_[temp_num].size() > 0){
+        total_time += (one_robot_time/robot_time_[temp_num].size());
+        total_distance += (one_robot_distance/robot_time_[temp_num].size());  
+      }
       temp_num  --;
     }
     outfile << "\n" << "\n";
