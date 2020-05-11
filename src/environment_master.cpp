@@ -15,7 +15,7 @@ void EnvironmentMaster::init() {
   //Code block for reading robot task assignmnet from a text file
   robot_number_ = 0;
   robot_count_ = 0;
-  std::ifstream f("/home/krishna/Desktop/task100robot10.txt");
+  std::ifstream f("/home/krishna/Krishna_code2/src/warehouse_manager/task500robot10.txt");
   if(f.is_open()){
     while(f){
       std::string line;
@@ -125,11 +125,11 @@ bool EnvironmentMaster::task_complete(
 }
 
 bool EnvironmentMaster::all_task_complete(warehouse_manager::Robot_Gen_Report::Request &req,
-                     warehouse_manager::Robot_Gen_Report::Response &res);
+                     warehouse_manager::Robot_Gen_Report::Response &res)
 {
  if(req.generate_report){
  std::ofstream outfile;
- outfile.open("/home/krishna/Desktop/final_report.txt", std::ios_base::app);
+ outfile.open("/home/krishna/Krishna_code2/src/warehouse_manager/final_report.txt", std::ios_base::app);
  outfile << "\n" << "\n";
  outfile << "Time and distance: " << "\n";
  float total_time;
@@ -172,7 +172,7 @@ bool EnvironmentMaster::all_task_complete(warehouse_manager::Robot_Gen_Report::R
 void EnvironmentMaster::add_to_report(int robot_number)
 {
   std::ofstream outfile;
-  outfile.open("/home/krishna/Desktop/task100robot10_report.txt", std::ios_base::app);
+  outfile.open("/home/krishna/Krishna_code2/src/warehouse_manager/task500robot10_report.txt", std::ios_base::app);
   if(robot_number >= 0 )
   {
     outfile << "\n" << "\n";
